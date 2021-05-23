@@ -1,3 +1,21 @@
+from __future__ import print_function
+import httplib2
+import os
+from oauth2client import file
+
+from apiclient import discovery
+import oauth2client
+from oauth2client import client
+from oauth2client import tools
+
+import datetime
+
+try:
+    import argparse
+    flags = tools.argparser.parse_args([])
+except ImportError:
+    flags = None
+
 from django.shortcuts import render, redirect 
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
@@ -17,6 +35,7 @@ import bcrypt
 # from httplib2 import Http
 # from oauth2client import file, client, tools
 # from datetime import datetime
+
 
 # SCOPES = "https://www.googleapis.com/auth/calendar"
 # store = file.Storage('token.json')
@@ -257,58 +276,70 @@ def meal_incomplete(request, id):
 def event_list(request):
     return render(request, 'ToDo_App/event_list.html')
 
-# def create_event(request):
-#     calendar = {
-#     'summary': 'calendarSummary',
-#     'timeZone': 'America/Los_Angeles'
-# }
+# If modifying these scopes, delete your previously saved credentials
+# at ~/.credentials/calendar-python-quickstart.json
+SCOPES = 'https://www.googleapis.com/auth/calendar'
+CLIENT_SECRET_FILE = 'credentials.json'
+APPLICATION_NAME = 'Google Calendar API Python Quickstart'
 
-#     created_calendar = service.calendars().insert(body=calendar).execute()
+def get_credentials():
+    """Gets valid user credentials from storage.
 
-# def google_calendar_connection():
-#     """
-#     This method used for connect with google calendar api.
-#     """
-    
-#     flags = tools.argparser.parse_args([])
-#     FLOW = OAuth2WebServerFlow(
-#         scope='https://www.googleapis.com/auth/calendar',
-#         credentials = ServiceAccountCredentials.from_json_keyfile_name(filename="credentials.json", scopes=SCOPES,
+    If nothing has been stored, or if the stored credentials are invalid,
+    the OAuth2 flow is completed to obtain the new credentials.
 
-#         )
-#     storage = Storage('calendar.dat')
-#     credentials = storage.get()
-#     if credentials is None or credentials.invalid == True:
-#         credentials = tools.run_flow(FLOW, storage, flags)
-    
-#     # Create an httplib2.Http object to handle our HTTP requests and authorize it
-#     # with our good Credentials.
-#     http = httplib2.Http()
-#     http = credentials.authorize(http)
-#     service = discovery.build('calendar', 'v3', http=http)
-    
-#     return service
+    Returns:
+        Credentials, the obtained credential.
+    """
+    home_dir = os.path.expanduser('~')
+    credential_dir = os.path.join(home_dir, '.credentials')
+    if not os.path.exists(credential_dir):
+        os.makedirs(credential_dir)
+    credential_path = os.path.join(credential_dir,'calendar-python-quickstart.json')
 
-# def event_form(self, form):
-#     """
-#     This method used for add event in google calendar.
-#     """
-    
-#     service = self.google_calendar_connection()
-    
-#     event = {
-#         'summary': "new",
-#         'location': "london",
-#         'description': "anything",
-#         'start': {
-#         'date': "2015-09-02",
-#         },
-#         'end': {
-#         'date': "2015-09-02",
-#         },
-                
-#     }
-    
-#     event = service.events().insert(calendarId='primary', body=event).execute()
-    
-#     return CreateView.form_valid(self, form) 
+    store = oauth2client.file.Storage(credential_path)
+    credentials = store.get()
+    if not credentials or credentials.invalid:
+        flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
+        flow.user_agent = APPLICATION_NAME
+        if flags:
+            credentials = tools.run_flow(flow, store, flags)
+        else: # Needed only for compatibility with Python 2.6
+            credentials = tools.run(flow, store)
+        print('Storing credentials to ' + credential_path)
+    return credentials
+
+def create_event(request):
+    """Shows basic usage of the Google Calendar API.
+
+    Creates a Google Calendar API service object and outputs a list of the next
+    10 events on the user's calendar.
+    """
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    service = discovery.build('calendar', 'v3', http=http)
+
+    # Refer to the Python quickstart on how to setup the environment:
+    # https://developers.google.com/google-apps/calendar/quickstart/python
+    # Change the scope to 'https://www.googleapis.com/auth/calendar' and delete any
+    # stored credentials.
+
+    if request.method == "POST":
+        
+        event = Event.objects.create(
+            summary=request.POST['summary'],
+            location=request.POST['location'],
+            description=request.POST['description'],
+            date=request.POST['date'],
+        )
+        event = service.events().insert(calendarId='primary', body=event).execute()
+    return redirect('ToDo_App/event-list')
+
+class EventCreate(LoginRequiredMixin, CreateView):
+    model= Event
+    fields = ['summary', 'location', 'description', 'date']
+    success_url= reverse_lazy('event-list')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(EventCreate, self).form_valid(form)
