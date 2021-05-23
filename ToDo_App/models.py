@@ -20,7 +20,7 @@ class Task(models.Model):
     description = models.TextField()
     complete = models.BooleanField(default=False)
     category = models.CharField(max_length=50)
-    due_date = models.DateTimeField()
+    due_date = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
