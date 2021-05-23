@@ -32,7 +32,7 @@ urlpatterns = [
     path('meal-update/<int:pk>/', MealUpdate.as_view(), name= 'meal-update'),
     path('meal-delete/<int:pk>/', MealDelete.as_view(), name= 'meal-delete'),
     path('meal-complete/<int:id>/', meal_complete, name= 'meal-complete'),
-    path('meal-incomplete/<int:id>/', meal_incomplete, name= 'meal-incomplete')
+    path('meal-incomplete/<int:id>/', meal_incomplete, name= 'meal-incomplete'),
     # path('create-event', create_event),
 
 ]

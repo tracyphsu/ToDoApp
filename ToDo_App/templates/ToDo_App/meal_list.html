@@ -43,9 +43,9 @@
         <div class="item-input-box" style="margin-top: -50px;">
             <form action="/meal-list" method="POST" style="margin-top: 20px; display: flex;">
                 {% csrf_token %}
-                <input type="text" name="post-item" placeholder="Add Item...">
+                <input type="text" name="post-item" placeholder="Add Meal...">
         </div>
-        <a href="/meal-create" id="add-link2" style="margin-top: -50px;">&#x2b;</a>
+        <a href="/meal-create" id="add-link5" style="margin-top: -50px;">&#x2b;</a>
     </div>
         <div class="task-items-wrapper">
             {% for meal in meals %}
@@ -78,10 +78,10 @@
         <div class="item-input-box" style="margin-top: -50px;">
             <form action="/meal-list" method="POST" style="margin-top: 20px; display: flex;">
                 {% csrf_token %}
-                <input type="text" name="post-item" placeholder="Add Item...">
+                <input type="text" name="post-item" placeholder="Add Meal...">
             </form>
         </div>
-        <a href="/meal-create" id="add-link2" style="margin-top: -50px;">&#x2b;</a>
+        <a href="/meal-create" id="add-link5" style="margin-top: -50px;">&#x2b;</a>
     </div>
         <div class="task-items-wrapper">
             {% for meal in meals %}
