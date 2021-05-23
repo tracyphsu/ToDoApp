@@ -8,3 +8,5 @@ I think I got the calendar to work.. but going to try to deploy right now so I c
 
 Also, my git ignore is not working -_-
 
+sigh.. the google calendar still doesn't display.
+https://3.21.186.10/login/
