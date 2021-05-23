@@ -1,0 +1,17 @@
+{% extends 'ToDo_App/main.html' %}
+{% block content %}
+<div class="header-bar3">
+    <a href="{% url 'meal-list' %}" class="logout-in">&#8592; Back</a>
+</div>
+
+<div class="card-body">
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input class="button" type="submit" value="Submit">
+    </form>
+</div>
+
+
+    
+{% endblock content %}

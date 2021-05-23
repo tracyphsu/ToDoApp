@@ -1,0 +1,17 @@
+{% extends 'ToDo_App/main.html' %}
+{% block content %}
+<div class="header-bar4">
+    <a href="{% url 'bill-list' %}" class="logout-in">&#8592; Back</a>
+</div>
+
+<div class="card-body">
+    <form action="" method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input class="button" type="submit" value="Submit">
+    </form>
+</div>
+
+
+    
+{% endblock content %}

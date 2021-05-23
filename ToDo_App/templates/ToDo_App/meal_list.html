@@ -1,0 +1,108 @@
+{% extends 'ToDo_App/main.html' %}
+{% load static %}
+{% block content %}
+
+<div class="header-bar3">
+    <div>
+        <h1>Hello {{request.user|title}}</h1>
+        <div style="margin: auto;">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a href="{% url 'tasks' %}"><button class="nav-link link-dark" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button" role="tab" aria-controls="nav-tasks" aria-selected="false">Tasks</button></a>
+                    <a href="{% url 'grocery-list' %}"><button class="nav-link link-dark" id="nav-grocery-tab" data-bs-toggle="tab" data-bs-target="#nav-grocery" type="button" role="tab" aria-controls="nav-grocery" aria-selected="false">Grocery List</button></a>
+                    <a href="{% url 'meal-list' %}"><button class="nav-link active link-dark" id="nav-mealplanner-tab" data-bs-toggle="tab" data-bs-target="#nav-mealplanner" type="button" role="tab" aria-controls="nav-mealplanner" aria-selected="true">Meal Planner</button></a>
+                    <a href="{% url 'bill-list' %}"><button class="nav-link link-dark" id="nav-billtracker-tab" data-bs-toggle="tab" data-bs-target="#nav-billtracker" type="button" role="tab" aria-controls="nav-billtracker" aria-selected="false">Bill Tracker</button></a>
+                    <a href="/ToDo_App/event-list"><button class="nav-link link-dark" id="nav-calendar-tab" data-bs-toggle="tab" data-bs-target="#nav-calendar" type="button" role="tab" aria-controls="nav-calendar" aria-selected="false">Events/Calendar</button></a>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade" id="nav-tasks" role="tabpanel" aria-labelledby="nav-tasks-tab"></div>
+                <div class="tab-pane fade" id="nav-grocery" role="tabpanel" aria-labelledby="nav-grocery-tab"></div>
+                <div class="tab-pane fade show active" id="nav-mealplanner" role="tabpanel" aria-labelledby="nav-mealplanner-tab"></div>
+                <div class="tab-pane fade" id="nav-billtracker" role="tabpanel" aria-labelledby="nav-billtracker-tab"></div>
+                <div class="tab-pane fade" id="nav-calendar" role="tabpanel" aria-labelledby="nav-calendar-tab"></div>
+            </div>
+        </div>
+    </div>
+
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'logout' %}" class="logout-in">Logout</a>
+    {% else %}
+    <a href="{% url 'login' %}" class="logout-in">Login</a>
+    {% endif %}
+</div>
+
+
+<h3 style="margin: 0px 0px 0px 15px;">You have <i class="count">{{count}}</i>    meal{{ count|pluralize:"s"}} planned</h3>
+<div class="week">
+    <div class="date-title" style=" display: flex;">
+        <input type="checkbox" style="margin-top: 20px;">
+        <h3 style="margin-left: 8px; margin-top: 10px;">Sunday:</h3>
+    </div>
+    <div id="item-add-wrapper">
+        <div class="item-input-box" style="margin-top: -50px;">
+            <form action="/meal-list" method="POST" style="margin-top: 20px; display: flex;">
+                {% csrf_token %}
+                <input type="text" name="post-item" placeholder="Add Item...">
+        </div>
+        <a href="/meal-create" id="add-link2" style="margin-top: -50px;">&#x2b;</a>
+    </div>
+        <div class="task-items-wrapper">
+            {% for meal in meals %}
+            <div class="task-wrapper">
+                {% if meal.complete %}
+                <div class="task-title">
+                    <a href="/meal-incomplete/{{meal.id}}"><div class="task-complete-icon"></div></a>
+                    <i><s><a href="{% url 'meal-update' meal.id %}">{{meal}}</a></s></i>
+                </div>
+                <a class="delete-link" href="{% url 'meal-delete' meal.id %}">&#215;</a>
+
+                {% else %}
+                <div class="task-title">
+                    <a href="/meal-complete/{{meal.id}}"><div class="task-incomplete-icon"></div></a>
+                    <a href="{% url 'meal-update' meal.id %}">{{meal}}</a>
+                </div>
+                <a class="delete-link" href="{% url 'meal-delete' meal.id %}">&#215;</a>
+                {% endif %}
+            </div>
+            </form>
+            {% endfor %}
+        </div>
+</div>
+<div class="week">
+    <div class="date-title" style=" display: flex;">
+        <input type="checkbox" style="margin-top: 20px;">
+        <h3 style="margin-left: 8px; margin-top: 10px;">Monday:</h3>
+    </div>
+    <div id="item-add-wrapper">
+        <div class="item-input-box" style="margin-top: -50px;">
+            <form action="/meal-list" method="POST" style="margin-top: 20px; display: flex;">
+                {% csrf_token %}
+                <input type="text" name="post-item" placeholder="Add Item...">
+            </form>
+        </div>
+        <a href="/meal-create" id="add-link2" style="margin-top: -50px;">&#x2b;</a>
+    </div>
+        <div class="task-items-wrapper">
+            {% for meal in meals %}
+            <div class="task-wrapper">
+                {% if meal.complete %}
+                <div class="task-title">
+                    <a href="/meal-incomplete/{{meal.id}}"><div class="task-complete-icon"></div></a>
+                    <i><s><a href="{% url 'meal-update' meal.id %}">{{meal}}</a></s></i>
+                </div>
+                <a class="delete-link" href="{% url 'meal-delete' meal.id %}">&#215;</a>
+
+                {% else %}
+                <div class="task-title">
+                    <a href="/meal-complete/{{meal.id}}"><div class="task-incomplete-icon"></div></a>
+                    <a href="{% url 'meal-update' meal.id %}">{{meal}}</a>
+                </div>
+                <a class="delete-link" href="{% url 'meal-delete' meal.id %}">&#215;</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+</div>
+
+{% endblock content %}
