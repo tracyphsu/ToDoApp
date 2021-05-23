@@ -6,9 +6,9 @@ urlpatterns = [
     path('login/', CustomLoginView.as_view(), name= 'login'),
     path('logout/', LogoutView.as_view(next_page='login'), name= 'logout'),
     path('register/', RegisterPage.as_view(), name= 'register'),
-    path('', TaskList.as_view(), name='tasks'),
+    path('', tasks, name='tasks'),
     path('task/<int:pk>/', TaskDetail.as_view(), name='task'),
-    path('task-create/', TaskCreate.as_view(), name = 'task-create'),
+    path('task-create/', taskCreate, name = 'task-create'),
     path('task-update/<int:pk>/', TaskUpdate.as_view(), name = 'task-update'),
     path('task-delete/<int:pk>/', TaskDelete.as_view(), name = 'task-delete'),
     path('grocery-list', GroceryList.as_view(), name= 'grocery-list'),
@@ -32,7 +32,7 @@ urlpatterns = [
     path('meal-update/<int:pk>/', MealUpdate.as_view(), name= 'meal-update'),
     path('meal-delete/<int:pk>/', MealDelete.as_view(), name= 'meal-delete'),
     path('meal-complete/<int:id>/', meal_complete, name= 'meal-complete'),
-    path('meal-incomplete/<int:id>/', meal_incomplete, name= 'meal-incomplete')
+    path('meal-incomplete/<int:id>/', meal_incomplete, name= 'meal-incomplete'),
     # path('create-event', create_event),
 
 ]
