@@ -6,7 +6,7 @@
         <div>
             <h1>Hello {{request.user|title}}</h1>
             <div style="margin: 15px 0px 0px 0px;">
-                <nav>
+                <nav class="container-fluid">
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <a href="{% url 'tasks' %}"><button class="nav-link active link-dark" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button" role="tab" aria-controls="nav-tasks" aria-selected="true">Tasks</button></a>
                         <a href="{% url 'groceries' %}"><button class="nav-link link-dark" id="nav-grocery-tab" data-bs-toggle="tab" data-bs-target="#nav-grocery" type="button" role="tab" aria-controls="nav-grocery" aria-selected="false">Grocery List</button></a>
@@ -37,7 +37,7 @@
             <form action="{% url 'task-create' %}" method="POST" style="margin-top: 20px; display: flex;" role="form">
                 {% csrf_token %}
                 <div class="form-group">
-                    <div class="input-group" style="width: 300%; margin-left: 53px">
+                    <div class="input-group container-fluid" style="width: 300%; margin-left: 40px">
                         {{ form.title }}
                         <span class="input-group-btn">
                             <button type="submit" class="btn btn-default" id="add-link"><svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
