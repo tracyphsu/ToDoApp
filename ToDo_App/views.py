@@ -31,6 +31,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Task, Grocery, Bill, Meal, Event
 from .forms import TaskForm, MealForm, BillForm, GroceryForm
 from django.contrib import messages
+from django.core import serializers
 import bcrypt
 
 # from googleapiclient.discovery import build
@@ -381,6 +382,7 @@ def create_event(request):
             description=request.POST['description'],
             date=request.POST['date'],
         )
+        data= serializers.serialize("json", event)
         event = service.events().insert(calendarId='primary', body=event).execute()
     return redirect('/ToDo_App/event-list')
 
