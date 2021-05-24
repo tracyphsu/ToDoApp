@@ -9,9 +9,9 @@
                 <nav>
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <a href="{% url 'tasks' %}"><button class="nav-link link-dark" id="nav-tasks-tab" data-bs-toggle="tab" data-bs-target="#nav-tasks" type="button" role="tab" aria-controls="nav-tasks" aria-selected="false">Tasks</button></a>
-                        <a href="{% url 'grocery-list' %}"><button class="nav-link link-dark" id="nav-grocery-tab" data-bs-toggle="tab" data-bs-target="#nav-grocery" type="button" role="tab" aria-controls="nav-grocery" aria-selected="false">Grocery List</button></a>
-                        <a href="{% url 'meal-list' %}"><button class="nav-link link-dark" id="nav-mealplanner-tab" data-bs-toggle="tab" data-bs-target="#nav-mealplanner" type="button" role="tab" aria-controls="nav-mealplanner" aria-selected="false">Meal Planner</button></a>
-                        <a href="{% url 'bill-list' %}"><button class="nav-link link-dark" id="nav-billtracker-tab" data-bs-toggle="tab" data-bs-target="#nav-billtracker" type="button" role="tab" aria-controls="nav-billtracker" aria-selected="false">Bill Tracker</button></a>
+                        <a href="{% url 'groceries' %}"><button class="nav-link link-dark" id="nav-grocery-tab" data-bs-toggle="tab" data-bs-target="#nav-grocery" type="button" role="tab" aria-controls="nav-grocery" aria-selected="false">Grocery List</button></a>
+                        <a href="{% url 'meals' %}"><button class="nav-link link-dark" id="nav-mealplanner-tab" data-bs-toggle="tab" data-bs-target="#nav-mealplanner" type="button" role="tab" aria-controls="nav-mealplanner" aria-selected="false">Meal Planner</button></a>
+                        <a href="{% url 'bills' %}"><button class="nav-link link-dark" id="nav-billtracker-tab" data-bs-toggle="tab" data-bs-target="#nav-billtracker" type="button" role="tab" aria-controls="nav-billtracker" aria-selected="false">Bill Tracker</button></a>
                         <a href="/ToDo_App/event-list"><button class="nav-link active link-dark" id="nav-calendar-tab" data-bs-toggle="tab" data-bs-target="#nav-calendar" type="button" role="tab" aria-controls="nav-calendar" aria-selected="true">Events/Calendar</button></a>
                     </div>
                 </nav>
@@ -34,7 +34,7 @@
 
 
     <div id="item-add-wrapper">
-        <a href="/create-event" id="add-link4">Create an Event &#x2b;</a>
+        <a href="/event-create" id="add-link4">Create an Event &#x2b;</a>
     </div>
     <!-- <h3 style="margin: 0px 0px 0px 15px;">You have <i class="count">{{count}}</i> bill{{ count|pluralize:"s"}} in your bill tracker</h3> -->
 

@@ -1,0 +1,17 @@
+{% extends 'ToDo_App/main.html' %}
+{% block content %}
+<div class="header-bar5">
+    <a href="/ToDo_App/event-list" class="logout-in">&#8592; Back</a>
+</div>
+
+<div class="card-body">
+    <form action="/create_event" method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <input class="button" type="submit" value="Submit">
+    </form>
+</div>
+
+
+    
+{% endblock content %}

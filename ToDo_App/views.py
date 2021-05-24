@@ -1,3 +1,21 @@
+from __future__ import print_function
+import httplib2
+import os
+from oauth2client import file
+
+from apiclient import discovery
+import oauth2client
+from oauth2client import client
+from oauth2client import tools
+
+import datetime
+
+try:
+    import argparse
+    flags = tools.argparser.parse_args([])
+except ImportError:
+    flags = None
+
 from django.shortcuts import render, redirect 
 from django.views.decorators.http import require_POST
 from django.views.generic.list import ListView
@@ -9,8 +27,8 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from .models import Task, Grocery, Bill, Meal 
-from .forms import TaskForm
+from .models import Task, Grocery, Bill, Meal, Event
+from .forms import TaskForm, MealForm, BillForm, GroceryForm
 from django.contrib import messages
 import bcrypt
 
@@ -18,6 +36,7 @@ import bcrypt
 # from httplib2 import Http
 # from oauth2client import file, client, tools
 # from datetime import datetime
+
 
 # SCOPES = "https://www.googleapis.com/auth/calendar"
 # store = file.Storage('token.json')
@@ -71,10 +90,10 @@ class RegisterPage(FormView):
 
 def tasks(request):
     tasks= Task.objects.all()
-    count = Task.objects.filter().count()
+    counts = Task.objects.filter(complete=False)
 
     form= TaskForm()
-    context = {'tasks':tasks, 'form': form }
+    context = {'tasks':tasks, 'form': form, 'counts': counts}
     return render(request, 'ToDo_App/task_list.html', context)
 
 class TaskDetail(LoginRequiredMixin, DetailView):
@@ -102,6 +121,25 @@ class TaskDelete(LoginRequiredMixin, DeleteView):
     context_object_name= 'task'
     success_url= reverse_lazy('tasks')    
 
+def groceries(request):
+    groceries= Grocery.objects.all()
+    counts = Grocery.objects.filter(complete=False)
+
+    form= GroceryForm()
+    context = {'groceries':groceries, 'form': form, 'counts': counts}
+    return render(request, 'ToDo_App/grocery_list.html', context)
+
+
+@require_POST
+def groceryCreate(request):
+    form= GroceryForm(request.POST)
+
+    if form.is_valid():
+        new_task= Grocery(item=request.POST['item'])
+        new_task.save()
+
+    return redirect('/groceries')
+
 class GroceryList(LoginRequiredMixin, ListView):
     model = Grocery
     context_object_name= 'groceries'
@@ -122,7 +160,7 @@ class GroceryList(LoginRequiredMixin, ListView):
 class GroceryCreate(LoginRequiredMixin, CreateView):
     model= Grocery
     fields = ['item', 'category', 'complete']
-    success_url= reverse_lazy('grocery-list')
+    success_url= reverse_lazy('groceries')
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -131,24 +169,24 @@ class GroceryCreate(LoginRequiredMixin, CreateView):
 class GroceryUpdate(LoginRequiredMixin, UpdateView):
     model= Grocery
     fields= ['item', 'category', 'complete']
-    success_url= reverse_lazy('grocery-list')
+    success_url= reverse_lazy('groceries')
 
 class GroceryDelete(LoginRequiredMixin, DeleteView):
     model= Grocery
     context_object_name= 'groceries'
-    success_url= reverse_lazy('grocery-list')
+    success_url= reverse_lazy('groceries')
 
 def grocery_complete(request, id):
     mark_complete = Grocery.objects.get(id=id)
     mark_complete.complete=True;
     mark_complete.save()
-    return redirect('/grocery-list')
+    return redirect('/groceries')
 
 def grocery_incomplete(request, id):
     mark_complete = Grocery.objects.get(id=id)
     mark_complete.complete=False;
     mark_complete.save()
-    return redirect('/grocery-list')
+    return redirect('/groceries')
 
 def task_complete(request, id):
     mark_complete = Task.objects.get(id=id)
@@ -161,6 +199,25 @@ def task_incomplete(request, id):
     mark_complete.complete=False;
     mark_complete.save()
     return redirect('/')
+
+def bills(request):
+    bills= Bill.objects.all()
+    counts = Bill.objects.filter(paid=False)
+
+    form= BillForm()
+    context = {'bills':bills, 'form': form, 'counts': counts}
+    return render(request, 'ToDo_App/bill_list.html', context)
+
+
+@require_POST
+def billCreate(request):
+    form= BillForm(request.POST)
+
+    if form.is_valid():
+        new_bill= Bill(bill=request.POST['bill'])
+        new_bill.save()
+
+    return redirect('/bills')
 
 class BillList(LoginRequiredMixin, ListView):
     model = Bill
@@ -182,7 +239,7 @@ class BillList(LoginRequiredMixin, ListView):
 class BillCreate(LoginRequiredMixin, CreateView):
     model= Bill
     fields = ['bill', 'category', 'due_date', 'paid']
-    success_url= reverse_lazy('bill-list')
+    success_url= reverse_lazy('bills')
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -191,24 +248,50 @@ class BillCreate(LoginRequiredMixin, CreateView):
 class BillUpdate(LoginRequiredMixin, UpdateView):
     model= Bill
     fields= ['bill', 'category', 'due_date', 'paid']
-    success_url= reverse_lazy('bill-list')
+    success_url= reverse_lazy('bills')
 
 class BillDelete(LoginRequiredMixin, DeleteView):
     model= Bill
     context_object_name= 'bills'
-    success_url= reverse_lazy('bill-list')
+    success_url= reverse_lazy('bills')
 
 def bill_paid(request, id):
     mark_paid = Bill.objects.get(id=id)
     mark_paid.paid=True;
     mark_paid.save()
-    return redirect('/bill-list')
+    return redirect('/bills')
 
 def bill_notpaid(request, id):
     mark_notpaid = Bill.objects.get(id=id)
     mark_notpaid.paid=False;
     mark_notpaid.save()
-    return redirect('/bill-list')
+    return redirect('/bills')
+
+def meals(request):
+    meals= Meal.objects.all()
+    counts = Meal.objects.filter(complete=False)
+    sunday = Meal.objects.all().filter(day="sunday")
+    monday = Meal.objects.all().filter(day="monday")
+    tuesday = Meal.objects.all().filter(day="tuesday")
+    wednesday = Meal.objects.all().filter(day="wednesday")
+    thursday = Meal.objects.all().filter(day="thursday")
+    friday = Meal.objects.all().filter(day="friday")
+    saturday = Meal.objects.all().filter(day="saturday")
+
+    form= MealForm()
+    context = {'meals':meals, 'form': form, 'counts': counts, 'sunday': sunday, 'monday': monday, 'tuesday': tuesday, 'wednesday': wednesday, 'thursday': thursday, 'friday': friday, 'saturday': saturday}
+    return render(request, 'ToDo_App/meal_list.html', context)
+
+
+@require_POST
+def mealCreate(request):
+    form= MealForm(request.POST)
+
+    if form.is_valid():
+        new_task= Meal(meal=request.POST['meal'], day=request.POST['day'])
+        new_task.save()
+
+    return redirect('/meals')
 
 class MealList(LoginRequiredMixin, ListView):
     model = Meal
@@ -223,7 +306,7 @@ class MealList(LoginRequiredMixin, ListView):
 
 class MealCreate(LoginRequiredMixin, CreateView):
     model= Meal
-    fields = ['meal', 'complete']
+    fields = ['meal', 'day', 'complete']
     success_url= reverse_lazy('meal-list')
 
     def form_valid(self, form):
@@ -232,7 +315,7 @@ class MealCreate(LoginRequiredMixin, CreateView):
 
 class MealUpdate(LoginRequiredMixin, UpdateView):
     model= Meal
-    fields= ['meal', 'complete']
+    fields= ['meal', 'day', 'complete']
     success_url= reverse_lazy('meal-list')
 
 class MealDelete(LoginRequiredMixin, DeleteView):
@@ -244,70 +327,82 @@ def meal_complete(request, id):
     mark_complete = Meal.objects.get(id=id)
     mark_complete.complete=True;
     mark_complete.save()
-    return redirect('/meal-list')
+    return redirect('/meals')
 
 def meal_incomplete(request, id):
     mark_incomplete = Meal.objects.get(id=id)
     mark_incomplete.complete=False;
     mark_incomplete.save()
-    return redirect('/meal-list')
+    return redirect('/meals')
 
 
 def event_list(request):
     return render(request, 'ToDo_App/event_list.html')
 
-# def create_event(request):
-#     calendar = {
-#     'summary': 'calendarSummary',
-#     'timeZone': 'America/Los_Angeles'
-# }
+# If modifying these scopes, delete your previously saved credentials
+# at ~/.credentials/calendar-python-quickstart.json
+SCOPES = 'https://www.googleapis.com/auth/calendar'
+CLIENT_SECRET_FILE = 'credentials.json'
+APPLICATION_NAME = 'Google Calendar API Python Quickstart'
 
-#     created_calendar = service.calendars().insert(body=calendar).execute()
+def get_credentials():
+    """Gets valid user credentials from storage.
 
-# def google_calendar_connection():
-#     """
-#     This method used for connect with google calendar api.
-#     """
-    
-#     flags = tools.argparser.parse_args([])
-#     FLOW = OAuth2WebServerFlow(
-#         scope='https://www.googleapis.com/auth/calendar',
-#         credentials = ServiceAccountCredentials.from_json_keyfile_name(filename="credentials.json", scopes=SCOPES,
+    If nothing has been stored, or if the stored credentials are invalid,
+    the OAuth2 flow is completed to obtain the new credentials.
 
-#         )
-#     storage = Storage('calendar.dat')
-#     credentials = storage.get()
-#     if credentials is None or credentials.invalid == True:
-#         credentials = tools.run_flow(FLOW, storage, flags)
-    
-#     # Create an httplib2.Http object to handle our HTTP requests and authorize it
-#     # with our good Credentials.
-#     http = httplib2.Http()
-#     http = credentials.authorize(http)
-#     service = discovery.build('calendar', 'v3', http=http)
-    
-#     return service
+    Returns:
+        Credentials, the obtained credential.
+    """
+    home_dir = os.path.expanduser('~')
+    credential_dir = os.path.join(home_dir, '.credentials')
+    if not os.path.exists(credential_dir):
+        os.makedirs(credential_dir)
+    credential_path = os.path.join(credential_dir,'calendar-python-quickstart.json')
 
-# def event_form(self, form):
-#     """
-#     This method used for add event in google calendar.
-#     """
-    
-#     service = self.google_calendar_connection()
-    
-#     event = {
-#         'summary': "new",
-#         'location': "london",
-#         'description': "anything",
-#         'start': {
-#         'date': "2015-09-02",
-#         },
-#         'end': {
-#         'date': "2015-09-02",
-#         },
-                
-#     }
-    
-#     event = service.events().insert(calendarId='primary', body=event).execute()
-    
-#     return CreateView.form_valid(self, form) 
+    store = oauth2client.file.Storage(credential_path)
+    credentials = store.get()
+    if not credentials or credentials.invalid:
+        flow = client.flow_from_clientsecrets(CLIENT_SECRET_FILE, SCOPES)
+        flow.user_agent = APPLICATION_NAME
+        if flags:
+            credentials = tools.run_flow(flow, store, flags)
+        else: # Needed only for compatibility with Python 2.6
+            credentials = tools.run(flow, store)
+        print('Storing credentials to ' + credential_path)
+    return credentials
+
+def create_event(request):
+    """Shows basic usage of the Google Calendar API.
+
+    Creates a Google Calendar API service object and outputs a list of the next
+    10 events on the user's calendar.
+    """
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    service = discovery.build('calendar', 'v3', http=http)
+
+    # Refer to the Python quickstart on how to setup the environment:
+    # https://developers.google.com/google-apps/calendar/quickstart/python
+    # Change the scope to 'https://www.googleapis.com/auth/calendar' and delete any
+    # stored credentials.
+
+    if request.method == "POST":
+        
+        event = Event.objects.create(
+            summary=request.POST['summary'],
+            location=request.POST['location'],
+            description=request.POST['description'],
+            date=request.POST['date'],
+        )
+        event = service.events().insert(calendarId='primary', body=event).execute()
+    return redirect('/ToDo_App/event-list')
+
+class EventCreate(LoginRequiredMixin, CreateView):
+    model= Event
+    fields = ['summary', 'location', 'description', 'date']
+    success_url= reverse_lazy('/ToDo_App/event-list')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(EventCreate, self).form_valid(form)
