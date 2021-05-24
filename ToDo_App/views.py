@@ -270,7 +270,7 @@ def bill_notpaid(request, id):
 def meals(request):
     meals= Meal.objects.all()
     counts = Meal.objects.filter(complete=False)
-    sunday = Meal.objects.all().filter(day="sunday")
+    sunday = Meal.objects.all().filter(day='sunday')
     monday = Meal.objects.all().filter(day="monday")
     tuesday = Meal.objects.all().filter(day="tuesday")
     wednesday = Meal.objects.all().filter(day="wednesday")
@@ -307,7 +307,7 @@ class MealList(LoginRequiredMixin, ListView):
 class MealCreate(LoginRequiredMixin, CreateView):
     model= Meal
     fields = ['meal', 'day', 'complete']
-    success_url= reverse_lazy('meal-list')
+    success_url= reverse_lazy('meals')
 
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -316,12 +316,12 @@ class MealCreate(LoginRequiredMixin, CreateView):
 class MealUpdate(LoginRequiredMixin, UpdateView):
     model= Meal
     fields= ['meal', 'day', 'complete']
-    success_url= reverse_lazy('meal-list')
+    success_url= reverse_lazy('meals')
 
 class MealDelete(LoginRequiredMixin, DeleteView):
     model= Meal
     context_object_name= 'meals'
-    success_url= reverse_lazy('meal-list')
+    success_url= reverse_lazy('meals')
 
 def meal_complete(request, id):
     mark_complete = Meal.objects.get(id=id)

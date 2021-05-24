@@ -40,7 +40,7 @@
                 <form action="/meal-create" method="POST" style="display: flex;">
                     {% csrf_token %}
                     <div class="form-group">
-                        <div class="input-group" style="width: 200%; margin: 70px 0px 0px 90px;">
+                        <div class="input-group" style="width: 180%; margin: 70px 0px 0px 90px;">
                             {{ form.meal }}
                             {{ form.day }}
                             <span class="input-group-btn">
@@ -49,22 +49,25 @@
                                 </svg></button>
                             </span>
                         </div>
-                    </div>    
+                    </div>
+                </form>    
             </div>
         </div>
     </div>
     <h3 style="margin: 20px 0px 10px 15px;">You have <i class="count">{{counts.count}}</i>    meal{{ count|pluralize:"s"}} planned</h3>
-        <div class="task-items-wrapper">
-            {% for meal in sunday %}
+
+
+    <div class="task-items-wrapper">
+        {% for meal in sunday %}
             <div class="day-header" style="display: flex">
                 <input type="checkbox" style="margin: 12px 10px 0 0;">
                 <h2>Sunday: </h2>
             </div>
             <div class="task-wrapper">
-                {% if meal.complete %}
+            {% if meal.complete %}
                 <div class="task-title">
                     <a href="/meal-incomplete/{{meal.id}}"><div class="task-complete-icon"></div></a>
-                    <i><s><a href="{% url 'meal-update' meal.id %}">{{meal}}</a></s></i>
+                    <i><s><a href="{% url 'meal-update' meal.id %}">{{meal.meal}}</a></s></i>
                 </div>
                 <div class="icons">
                     <a class="edit-link" href="{% url 'meal-update' meal.id %}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -77,10 +80,10 @@
                     </a>
                 </div>
 
-                {% else %}
+            {% else %}
                 <div class="task-title">
                     <a href="/meal-complete/{{meal.id}}"><div class="task-incomplete-icon"></div></a>
-                    <a href="{% url 'meal-update' meal.id %}">{{meal}}</a>
+                    <a href="{% url 'meal-update' meal.id %}">{{meal.meal}}</a>
                 </div>
                 <div class="icons">
                     <a class="edit-link" href="{% url 'meal-update' meal.id %}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -92,10 +95,10 @@
                         <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
                     </a>
                 </div>
-                {% endif %}
+            {% endif %}
             </div>
-            </form>
-            {% endfor %}
+        {% endfor %}
+            
             {% for meal in monday %}
             <div class="day-header" style="display: flex">
                 <input type="checkbox" style="margin: 12px 10px 0 0;">
@@ -135,7 +138,7 @@
                 </div>
                 {% endif %}
             </div>
-            </form>
+
             {% endfor %}
 
             {% for meal in tuesday %}
@@ -147,7 +150,7 @@
                 {% if meal.complete %}
                 <div class="task-title">
                     <a href="/meal-incomplete/{{meal.id}}"><div class="task-complete-icon"></div></a>
-                    <i><s><a href="{% url 'meal-update' meal.id %}">{{meal}}</a></s></i>
+                    <i><s><a href="{% url 'meal-update' meal.id %}">{{meal.meal}}</a></s></i>
                 </div>
                 <div class="icons">
                     <a class="edit-link" href="{% url 'meal-update' meal.id %}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -163,7 +166,7 @@
                 {% else %}
                 <div class="task-title">
                     <a href="/meal-complete/{{meal.id}}"><div class="task-incomplete-icon"></div></a>
-                    <a href="{% url 'meal-update' meal.id %}">{{meal}}</a>
+                    <a href="{% url 'meal-update' meal.id %}">{{meal.meal}}</a>
                 </div>
                 <div class="icons">
                     <a class="edit-link" href="{% url 'meal-update' meal.id %}"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -177,7 +180,7 @@
                 </div>
                 {% endif %}
             </div>
-            </form>
+
             {% endfor %}
 
             {% for meal in wednesday %}
@@ -219,7 +222,7 @@
                 </div>
                 {% endif %}
             </div>
-            </form>
+
             {% endfor %}
 
             {% for meal in thursday %}
@@ -261,7 +264,7 @@
                 </div>
                 {% endif %}
             </div>
-            </form>
+
             {% endfor %}
 
             {% for meal in friday %}
@@ -345,9 +348,9 @@
                 </div>
                 {% endif %}
             </div>
-            </form>
+
             {% endfor %}
-        </div>
+    </div>
 </div>
 
 {% endblock content %}
