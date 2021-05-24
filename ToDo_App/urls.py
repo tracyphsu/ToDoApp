@@ -30,7 +30,6 @@ urlpatterns = [
     path('meal-list', MealList.as_view(), name= 'meal-list'),
     path('ToDo_App/event-list', event_list),
     path('meals', meals, name='meals'),
-    path('meal-list', MealList.as_view(), name= 'meal-list'),
     path('meal-create', mealCreate, name= 'meal-create'),
     path('meal-update/<int:pk>/', MealUpdate.as_view(), name= 'meal-update'),
     path('meal-delete/<int:pk>/', MealDelete.as_view(), name= 'meal-delete'),

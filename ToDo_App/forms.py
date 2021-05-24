@@ -16,7 +16,7 @@ class MealForm(forms.Form):
         ))
     day = forms.CharField(max_length=9, 
         widget= forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': 'Day of the Wekk...', 'aria-label': 'Day', 'aria-describedby': 'add-btn' }
+            attrs={'class': 'form-control', 'placeholder': 'Day of the Week...', 'aria-label': 'Day', 'aria-describedby': 'add-btn' }
         ))
     # CHOICES = (
     #     ('1', 'sunday'),

@@ -27,6 +27,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.contrib.auth.decorators import login_required
 from .models import Task, Grocery, Bill, Meal, Event
 from .forms import TaskForm, MealForm, BillForm, GroceryForm
 from django.contrib import messages
@@ -87,7 +88,7 @@ class RegisterPage(FormView):
             return redirect('tasks')
         return super(RegisterPage, self).get(*args, **kwargs)
 
-
+@login_required
 def tasks(request):
     tasks= Task.objects.all()
     counts = Task.objects.filter(complete=False)
@@ -101,6 +102,7 @@ class TaskDetail(LoginRequiredMixin, DetailView):
     context_object_name= 'task'
     template_name= 'ToDo_App/task.html'
 
+@login_required
 @require_POST
 def taskCreate(request):
     form= TaskForm(request.POST)
@@ -121,6 +123,7 @@ class TaskDelete(LoginRequiredMixin, DeleteView):
     context_object_name= 'task'
     success_url= reverse_lazy('tasks')    
 
+@login_required
 def groceries(request):
     groceries= Grocery.objects.all()
     counts = Grocery.objects.filter(complete=False)
@@ -129,7 +132,7 @@ def groceries(request):
     context = {'groceries':groceries, 'form': form, 'counts': counts}
     return render(request, 'ToDo_App/grocery_list.html', context)
 
-
+@login_required
 @require_POST
 def groceryCreate(request):
     form= GroceryForm(request.POST)
@@ -157,15 +160,6 @@ class GroceryList(LoginRequiredMixin, ListView):
 
         return context
 
-class GroceryCreate(LoginRequiredMixin, CreateView):
-    model= Grocery
-    fields = ['item', 'category', 'complete']
-    success_url= reverse_lazy('groceries')
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super(GroceryCreate, self).form_valid(form)
-
 class GroceryUpdate(LoginRequiredMixin, UpdateView):
     model= Grocery
     fields= ['item', 'category', 'complete']
@@ -176,30 +170,35 @@ class GroceryDelete(LoginRequiredMixin, DeleteView):
     context_object_name= 'groceries'
     success_url= reverse_lazy('groceries')
 
+@login_required
 def grocery_complete(request, id):
     mark_complete = Grocery.objects.get(id=id)
     mark_complete.complete=True;
     mark_complete.save()
     return redirect('/groceries')
 
+@login_required
 def grocery_incomplete(request, id):
     mark_complete = Grocery.objects.get(id=id)
     mark_complete.complete=False;
     mark_complete.save()
     return redirect('/groceries')
 
+@login_required
 def task_complete(request, id):
     mark_complete = Task.objects.get(id=id)
     mark_complete.complete=True;
     mark_complete.save()
     return redirect('/')
 
+@login_required
 def task_incomplete(request, id):
     mark_complete = Task.objects.get(id=id)
     mark_complete.complete=False;
     mark_complete.save()
     return redirect('/')
 
+@login_required
 def bills(request):
     bills= Bill.objects.all()
     counts = Bill.objects.filter(paid=False)
@@ -208,7 +207,7 @@ def bills(request):
     context = {'bills':bills, 'form': form, 'counts': counts}
     return render(request, 'ToDo_App/bill_list.html', context)
 
-
+@login_required
 @require_POST
 def billCreate(request):
     form= BillForm(request.POST)
@@ -236,15 +235,6 @@ class BillList(LoginRequiredMixin, ListView):
 
         return context
 
-class BillCreate(LoginRequiredMixin, CreateView):
-    model= Bill
-    fields = ['bill', 'category', 'due_date', 'paid']
-    success_url= reverse_lazy('bills')
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super(BillCreate, self).form_valid(form)
-
 class BillUpdate(LoginRequiredMixin, UpdateView):
     model= Bill
     fields= ['bill', 'category', 'due_date', 'paid']
@@ -255,18 +245,21 @@ class BillDelete(LoginRequiredMixin, DeleteView):
     context_object_name= 'bills'
     success_url= reverse_lazy('bills')
 
+@login_required
 def bill_paid(request, id):
     mark_paid = Bill.objects.get(id=id)
     mark_paid.paid=True;
     mark_paid.save()
     return redirect('/bills')
 
+@login_required
 def bill_notpaid(request, id):
     mark_notpaid = Bill.objects.get(id=id)
     mark_notpaid.paid=False;
     mark_notpaid.save()
     return redirect('/bills')
 
+@login_required
 def meals(request):
     meals= Meal.objects.all()
     counts = Meal.objects.filter(complete=False)
@@ -282,7 +275,7 @@ def meals(request):
     context = {'meals':meals, 'form': form, 'counts': counts, 'sunday': sunday, 'monday': monday, 'tuesday': tuesday, 'wednesday': wednesday, 'thursday': thursday, 'friday': friday, 'saturday': saturday}
     return render(request, 'ToDo_App/meal_list.html', context)
 
-
+@login_required
 @require_POST
 def mealCreate(request):
     form= MealForm(request.POST)
@@ -304,15 +297,6 @@ class MealList(LoginRequiredMixin, ListView):
 
         return context
 
-class MealCreate(LoginRequiredMixin, CreateView):
-    model= Meal
-    fields = ['meal', 'day', 'complete']
-    success_url= reverse_lazy('meals')
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        return super(MealCreate, self).form_valid(form)
-
 class MealUpdate(LoginRequiredMixin, UpdateView):
     model= Meal
     fields= ['meal', 'day', 'complete']
@@ -323,19 +307,21 @@ class MealDelete(LoginRequiredMixin, DeleteView):
     context_object_name= 'meals'
     success_url= reverse_lazy('meals')
 
+@login_required
 def meal_complete(request, id):
     mark_complete = Meal.objects.get(id=id)
     mark_complete.complete=True;
     mark_complete.save()
     return redirect('/meals')
 
+@login_required
 def meal_incomplete(request, id):
     mark_incomplete = Meal.objects.get(id=id)
     mark_incomplete.complete=False;
     mark_incomplete.save()
     return redirect('/meals')
 
-
+@login_required
 def event_list(request):
     return render(request, 'ToDo_App/event_list.html')
 
