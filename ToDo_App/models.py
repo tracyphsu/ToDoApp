@@ -86,7 +86,8 @@ class Event(models.Model):
     summary= models.CharField(max_length= 250, null=True, blank=True)
     location= models.CharField(max_length= 250, null=True, blank=True)
     description= models.CharField(max_length= 250, null=True, blank=True)
-    date= models.DateField()
+    start= models.DateField()
+    end= models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -94,4 +95,4 @@ class Event(models.Model):
         return self.summary
 
     class Meta:
-        ordering= ['date']
+        ordering= ['start']

@@ -40,3 +40,25 @@ class GroceryForm(forms.Form):
         widget= forms.TextInput(
             attrs={'class': 'form-control', 'placeholder': 'Add Grocery...', 'aria-label': 'Grocery', 'aria-describedby': 'add-btn' }
         ))
+
+class EventForm(forms.Form):
+    summary = forms.CharField(max_length=250, 
+        widget= forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Add Summary...', 'aria-label': 'Summary', 'aria-describedby': 'add-btn' }
+        ))
+    location = forms.CharField(max_length=250, 
+    widget= forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Add Location...', 'aria-label': 'Location', 'aria-describedby': 'add-btn' }
+        ))
+    description = forms.CharField(max_length=250, 
+    widget= forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Add Description...', 'aria-label': 'Description', 'aria-describedby': 'add-btn' }
+        ))
+    start = forms.DateField( 
+    widget= forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Add Start Date...', 'aria-label': 'Start Date', 'aria-describedby': 'add-btn' }
+        ))
+    end = forms.DateField( 
+    widget= forms.TextInput(
+        attrs={'class': 'form-control', 'placeholder': 'Add End Date...', 'aria-label': 'End Date', 'aria-describedby': 'add-btn' }
+        ))
