@@ -1,7 +1,10 @@
 from __future__ import print_function
+from apiclient.discovery import build
+from httplib2 import Http
 import httplib2
 import os
 from oauth2client import file
+import json
 
 from apiclient import discovery
 import oauth2client
@@ -29,40 +32,10 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from .models import Task, Grocery, Bill, Meal, Event
-from .forms import TaskForm, MealForm, BillForm, GroceryForm
+from .forms import TaskForm, MealForm, BillForm, GroceryForm, EventForm
 from django.contrib import messages
 from django.core import serializers
 import bcrypt
-
-# from googleapiclient.discovery import build
-# from httplib2 import Http
-# from oauth2client import file, client, tools
-# from datetime import datetime
-
-
-# SCOPES = "https://www.googleapis.com/auth/calendar"
-# store = file.Storage('token.json')
-# creds = store.get()
-# if not creds or creds.invalid:
-#     flow = client.flow_from_clientsecrets('credentials.json', SCOPES)
-#     creds = tools.run_flow(flow, store)
-#     service = build('calendar', 'v3', http=creds.authorize(Http()))
-# import datetime
-# import os.path
-# from googleapiclient.discovery import build
-# from google_auth_oauthlib.flow import InstalledAppFlow
-# from google.auth.transport.requests import Request
-# from google.oauth2.credentials import Credentials
-
-# from datetime import timedelta
-
-# import pytz
-
-# SCOPES = ["https://www.googleapis.com/auth/calendar"]
-# credentials = ServiceAccountCredentials.from_json_keyfile_name(
-#     filename="credentials.json", scopes=SCOPES
-# )
-
 
 class CustomLoginView(LoginView):
     template_name= 'ToDo_App/login.html'
@@ -360,35 +333,44 @@ def get_credentials():
     return credentials
 
 def create_event(request):
-    """Shows basic usage of the Google Calendar API.
+    SCOPES = 'https://www.googleapis.com/auth/calendar'
+    store = file.Storage('storage.json')
+    creds = store.get()
+    if not creds or creds.invalid:
+        flow = client.flow_from_clientsecrets('credentials.json', SCOPES)
+        creds = tools.run_flow(flow, store, flags) \
+                if flags else tools.fun(flow,store)
 
-    Creates a Google Calendar API service object and outputs a list of the next
-    10 events on the user's calendar.
-    """
     credentials = get_credentials()
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('calendar', 'v3', http=http)
 
-    # Refer to the Python quickstart on how to setup the environment:
-    # https://developers.google.com/google-apps/calendar/quickstart/python
-    # Change the scope to 'https://www.googleapis.com/auth/calendar' and delete any
-    # stored credentials.
+    event = {
+    'summary': request.POST['summary'],
+    'location': request.POST['location'],
+    'description': request.POST['description'],
+    'start': {
+        'date': request.POST['start'],
+    },
+    'end': {
+        'date': request.POST['end'],
+    },
 
-    if request.method == "POST":
-        
-        event = Event.objects.create(
-            summary=request.POST['summary'],
-            location=request.POST['location'],
-            description=request.POST['description'],
-            date=request.POST['date'],
-        )
-        data= serializers.serialize("json", event)
-        event = service.events().insert(calendarId='primary', body=event).execute()
+    }
+    # json_event = json.dumps(event)
+    event = service.events().insert(calendarId='bb3c6jev76jlkm8n43b1knkhco@group.calendar.google.com', body=event).execute()
+
+    form= EventForm(request.POST)
+
+    if form.is_valid():
+        new_event= Event(summary=request.POST['summary'], location=request.POST['location'], description=request.POST['description'], start=request.POST['start'], end=request.POST['end'])
+        new_event.save()
+
     return redirect('/ToDo_App/event-list')
 
 class EventCreate(LoginRequiredMixin, CreateView):
     model= Event
-    fields = ['summary', 'location', 'description', 'date']
+    fields = ['summary', 'location', 'description', 'start', 'end']
     success_url= reverse_lazy('/ToDo_App/event-list')
 
     def form_valid(self, form):
