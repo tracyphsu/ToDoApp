@@ -346,16 +346,15 @@ def create_event(request):
     service = discovery.build('calendar', 'v3', http=http)
 
     event = {
-    'summary': request.POST['summary'],
-    'location': request.POST['location'],
-    'description': request.POST['description'],
-    'start': {
-        'date': request.POST['start'],
-    },
-    'end': {
-        'date': request.POST['end'],
-    },
-
+        'summary': request.POST['summary'],
+        'location': request.POST['location'],
+        'description': request.POST['description'],
+        'start': {
+            'date': request.POST['start_date'],
+        },
+        'end': {
+            'date': request.POST['end_date'],
+        },
     }
     # json_event = json.dumps(event)
     event = service.events().insert(calendarId='bb3c6jev76jlkm8n43b1knkhco@group.calendar.google.com', body=event).execute()
@@ -363,14 +362,14 @@ def create_event(request):
     form= EventForm(request.POST)
 
     if form.is_valid():
-        new_event= Event(summary=request.POST['summary'], location=request.POST['location'], description=request.POST['description'], start=request.POST['start'], end=request.POST['end'])
+        new_event= Event(summary=request.POST['summary'], location=request.POST['location'], description=request.POST['description'], start=request.POST['start_date'], end=request.POST['end_date'])
         new_event.save()
 
     return redirect('/ToDo_App/event-list')
 
 class EventCreate(LoginRequiredMixin, CreateView):
     model= Event
-    fields = ['summary', 'location', 'description', 'start', 'end']
+    fields = ['summary', 'location', 'description', 'start_date', 'end_date']
     success_url= reverse_lazy('/ToDo_App/event-list')
 
     def form_valid(self, form):
