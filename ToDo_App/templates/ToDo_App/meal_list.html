@@ -54,10 +54,12 @@
             </div>
         </div>
     </div>
+    {% if counts %}
     <h3 style="margin: 20px 0px 10px 15px;">You have <i class="count">{{counts.count}}</i>  meal{{ counts|pluralize:"s"}} planned</h3>
-
+    {% endif %}
     <div class="task-items-wrapper">
         {% for meal in sunday %}
+        
             <div class="day-header" style="display: flex">
                 <input type="checkbox" style="margin: 12px 10px 0 0;">
                 <h2>Sunday: </h2>
@@ -96,9 +98,11 @@
                 </div>
             {% endif %}
             </div>
+
         {% endfor %}
             
             {% for meal in monday %}
+            
             <div class="day-header" style="display: flex">
                 <input type="checkbox" style="margin: 12px 10px 0 0;">
                 <h2>Monday: </h2>
@@ -137,10 +141,11 @@
                 </div>
                 {% endif %}
             </div>
-
+            
             {% endfor %}
 
             {% for meal in tuesday %}
+            
             <div class="day-header" style="display: flex">
                 <input type="checkbox" style="margin: 12px 10px 0 0;">
                 <h2>Tuesday: </h2>
@@ -179,7 +184,7 @@
                 </div>
                 {% endif %}
             </div>
-
+            
             {% endfor %}
 
             {% for meal in wednesday %}
@@ -347,7 +352,6 @@
                 </div>
                 {% endif %}
             </div>
-
             {% endfor %}
     </div>
 </div>
