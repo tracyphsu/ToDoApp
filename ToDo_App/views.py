@@ -1,4 +1,6 @@
 from __future__ import print_function
+
+from django.contrib.auth.models import User
 from apiclient.discovery import build
 from httplib2 import Http
 import httplib2
@@ -64,8 +66,8 @@ class RegisterPage(FormView):
 
 @login_required
 def tasks(request):
-    tasks= Task.objects.all()
-    counts = Task.objects.filter(complete=False)
+    tasks= Task.objects.filter(user=request.user)
+    counts = Task.objects.filter(user=request.user, complete=False)
 
     form= TaskForm()
     context = {'tasks':tasks, 'form': form, 'counts': counts}
@@ -79,11 +81,12 @@ class TaskDetail(LoginRequiredMixin, DetailView):
 @login_required
 @require_POST
 def taskCreate(request):
-    form= TaskForm(request.POST)
+    if request.method == "POST":
+        form= TaskForm(request.POST)
 
-    if form.is_valid():
-        new_task= Task(title=request.POST['title'])
-        new_task.save()
+        if form.is_valid():
+            new_task= Task(user=request.user, title=request.POST['title'])
+            new_task.save()
 
     return redirect('/')
 
@@ -99,8 +102,8 @@ class TaskDelete(LoginRequiredMixin, DeleteView):
 
 @login_required
 def groceries(request):
-    groceries= Grocery.objects.all()
-    counts = Grocery.objects.filter(complete=False)
+    groceries= Grocery.objects.filter(user=request.user)
+    counts = Grocery.objects.filter(user=request.user, complete=False)
 
     form= GroceryForm()
     context = {'groceries':groceries, 'form': form, 'counts': counts}
@@ -112,7 +115,7 @@ def groceryCreate(request):
     form= GroceryForm(request.POST)
 
     if form.is_valid():
-        new_task= Grocery(item=request.POST['item'])
+        new_task= Grocery(user=request.user, item=request.POST['item'])
         new_task.save()
 
     return redirect('/groceries')
@@ -174,8 +177,8 @@ def task_incomplete(request, id):
 
 @login_required
 def bills(request):
-    bills= Bill.objects.all()
-    counts = Bill.objects.filter(paid=False)
+    bills= Bill.objects.filter(user=request.user)
+    counts = Bill.objects.filter(user=request.user, paid=False)
 
     form= BillForm()
     context = {'bills':bills, 'form': form, 'counts': counts}
@@ -185,11 +188,9 @@ def bills(request):
 # @require_POST
 # def billCreate(request):
 #     form= BillForm(request.POST)
-
 #     if form.is_valid():
-#         new_bill= Bill(bill=request.POST['bill'], due_date=request.POST['due_date'])
+#         new_bill= Bill(user=request.user, bill=request.POST['bill'], due_date=request.POST['due_date'])
 #         new_bill.save()
-
 #     return redirect('/bills')
 
 class BillList(LoginRequiredMixin, ListView):
@@ -235,15 +236,15 @@ def bill_notpaid(request, id):
 
 @login_required
 def meals(request):
-    meals= Meal.objects.all()
-    counts = Meal.objects.filter(complete=False)
-    sunday = Meal.objects.all().filter(day='sunday')
-    monday = Meal.objects.all().filter(day="monday")
-    tuesday = Meal.objects.all().filter(day="tuesday")
-    wednesday = Meal.objects.all().filter(day="wednesday")
-    thursday = Meal.objects.all().filter(day="thursday")
-    friday = Meal.objects.all().filter(day="friday")
-    saturday = Meal.objects.all().filter(day="saturday")
+    meals= Meal.objects.filter(user=request.user)
+    counts = Meal.objects.filter(user=request.user, complete=False)
+    sunday = Meal.objects.all().filter(user=request.user, day='sunday')
+    monday = Meal.objects.all().filter(user=request.user, day="monday")
+    tuesday = Meal.objects.all().filter(user=request.user, day="tuesday")
+    wednesday = Meal.objects.all().filter(user=request.user, day="wednesday")
+    thursday = Meal.objects.all().filter(user=request.user, day="thursday")
+    friday = Meal.objects.all().filter(user=request.user, day="friday")
+    saturday = Meal.objects.all().filter(user=request.user, day="saturday")
 
     form= MealForm()
     context = {'meals':meals, 'form': form, 'counts': counts, 'sunday': sunday, 'monday': monday, 'tuesday': tuesday, 'wednesday': wednesday, 'thursday': thursday, 'friday': friday, 'saturday': saturday}
@@ -255,7 +256,7 @@ def mealCreate(request):
     form= MealForm(request.POST)
 
     if form.is_valid():
-        new_task= Meal(meal=request.POST['meal'], day=request.POST['day'])
+        new_task= Meal(user=request.user, meal=request.POST['meal'], day=request.POST['day'])
         new_task.save()
 
     return redirect('/meals')
@@ -301,7 +302,7 @@ def meal_incomplete(request, id):
 
 @login_required
 def event_list(request):
-    return render(request, 'ToDo_App/event_list.html')
+        return render(request, 'ToDo_App/event_list.html')
 
 # If modifying these scopes, delete your previously saved credentials
 # at ~/.credentials/calendar-python-quickstart.json
@@ -400,7 +401,7 @@ def billCreate(request):
     form= BillForm(request.POST)
 
     if form.is_valid():
-        new_bill= Bill(bill=request.POST['bill'], due_date=request.POST['due_date'])
+        new_bill= Bill(user=request.user, bill=request.POST['bill'], due_date=request.POST['due_date'])
         new_bill.save()
 
     return redirect('/bills')
