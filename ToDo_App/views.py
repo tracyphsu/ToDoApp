@@ -181,16 +181,16 @@ def bills(request):
     context = {'bills':bills, 'form': form, 'counts': counts}
     return render(request, 'ToDo_App/bill_list.html', context)
 
-@login_required
-@require_POST
-def billCreate(request):
-    form= BillForm(request.POST)
+# @login_required
+# @require_POST
+# def billCreate(request):
+#     form= BillForm(request.POST)
 
-    if form.is_valid():
-        new_bill= Bill(bill=request.POST['bill'])
-        new_bill.save()
+#     if form.is_valid():
+#         new_bill= Bill(bill=request.POST['bill'], due_date=request.POST['due_date'])
+#         new_bill.save()
 
-    return redirect('/bills')
+#     return redirect('/bills')
 
 class BillList(LoginRequiredMixin, ListView):
     model = Bill
@@ -281,6 +281,10 @@ class MealDelete(LoginRequiredMixin, DeleteView):
     context_object_name= 'meals'
     success_url= reverse_lazy('meals')
 
+def delete_all(request):
+    delete_all.delete = Meal.objects.all().delete()
+    return redirect('/meals')
+
 @login_required
 def meal_complete(request, id):
     mark_complete = Meal.objects.get(id=id)
@@ -366,6 +370,40 @@ def create_event(request):
         new_event.save()
 
     return redirect('/ToDo_App/event-list')
+
+@login_required
+@require_POST
+def billCreate(request):
+    SCOPES = 'https://www.googleapis.com/auth/calendar'
+    store = file.Storage('storage.json')
+    creds = store.get()
+    if not creds or creds.invalid:
+        flow = client.flow_from_clientsecrets('credentials.json', SCOPES)
+        creds = tools.run_flow(flow, store, flags) \
+                if flags else tools.fun(flow,store)
+
+    credentials = get_credentials()
+    http = credentials.authorize(httplib2.Http())
+    service = discovery.build('calendar', 'v3', http=http)
+
+    event = {
+        'summary': request.POST['bill'] + " Bill Due",
+        'start': {
+            'date': request.POST['due_date'],
+        },
+        'end': {
+            'date': request.POST['due_date'],
+        },
+    }
+    # json_event = json.dumps(event)
+    event = service.events().insert(calendarId='bb3c6jev76jlkm8n43b1knkhco@group.calendar.google.com', body=event).execute()
+    form= BillForm(request.POST)
+
+    if form.is_valid():
+        new_bill= Bill(bill=request.POST['bill'], due_date=request.POST['due_date'])
+        new_bill.save()
+
+    return redirect('/bills')
 
 class EventCreate(LoginRequiredMixin, CreateView):
     model= Event

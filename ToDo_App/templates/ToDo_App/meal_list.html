@@ -33,14 +33,14 @@
 </div>
 
 <div class="week">
-    <div class="date-title" style=" display: flex;">
+    <div class="date-title">
 
         <div id="item-add-wrapper">
-            <div class="item-input-box" style="margin-top: -50px;">
-                <form action="/meal-create" method="POST" style="display: flex;">
+            <div class="item-input-box">
+                <form action="/meal-create" method="POST" style="margin-top: 20px; display: flex; justify-content: center;" role="form">
                     {% csrf_token %}
-                    <div class="form-group">
-                        <div class="input-group" style="width: 190%; margin: 70px 0px 0px 53px;">
+                    <div class="form-group" style="width: 100%;">
+                        <div class="input-group">
                             {{ form.meal }}
                             {{ form.day }}
                             <span class="input-group-btn">
@@ -59,7 +59,6 @@
     <div class="task-items-wrapper">
         {% for meal in sunday %}
             <div class="day-header" style="display: flex">
-                <input type="checkbox" style="margin: 12px 10px 0 0;">
                 <h2>Sunday: </h2>
             </div>
             <div class="task-wrapper">
@@ -94,13 +93,14 @@
                         <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>
                     </a>
                 </div>
+                
             {% endif %}
             </div>
+            <button a href="/delete_all" style="background-color: rgb(240, 88, 88); color: white; font-size: 12px; float: right;">Delete All</a></button>
         {% endfor %}
             
             {% for meal in monday %}
             <div class="day-header" style="display: flex">
-                <input type="checkbox" style="margin: 12px 10px 0 0;">
                 <h2>Monday: </h2>
             </div>
             <div class="task-wrapper">
@@ -142,7 +142,6 @@
 
             {% for meal in tuesday %}
             <div class="day-header" style="display: flex">
-                <input type="checkbox" style="margin: 12px 10px 0 0;">
                 <h2>Tuesday: </h2>
             </div>
             <div class="task-wrapper">
@@ -184,7 +183,6 @@
 
             {% for meal in wednesday %}
             <div class="day-header" style="display: flex">
-                <input type="checkbox" style="margin: 12px 10px 0 0;">
                 <h2>Wednesday: </h2>
             </div>
             <div class="task-wrapper">
@@ -226,7 +224,6 @@
 
             {% for meal in thursday %}
             <div class="day-header" style="display: flex">
-                <input type="checkbox" style="margin: 12px 10px 0 0;">
                 <h2>Thursday: </h2>
             </div>
             <div class="task-wrapper">
@@ -268,7 +265,6 @@
 
             {% for meal in friday %}
             <div class="day-header" style="display: flex">
-                <input type="checkbox" style="margin: 12px 10px 0 0;">
                 <h2>Friday: </h2>
             </div>
             <div class="task-wrapper">
@@ -310,7 +306,6 @@
 
             {% for meal in saturday %}
             <div class="day-header" style="display: flex">
-                <input type="checkbox" style="margin: 12px 10px 0 0;">
                 <h2>Saturday: </h2>
             </div>
             <div class="task-wrapper">
