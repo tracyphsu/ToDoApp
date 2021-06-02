@@ -34,6 +34,11 @@ class BillForm(forms.Form):
         widget= forms.TextInput(
             attrs={'class': 'form-control', 'placeholder': 'Add Bill...', 'aria-label': 'Bill', 'aria-describedby': 'add-btn' }
         ))
+    due_date = forms.DateField( 
+        widget= forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'Add Due Date...', 'aria-label': 'Bill', 'aria-describedby': 'add-btn' }
+        ))
+
 
 class GroceryForm(forms.Form):
     item = forms.CharField(max_length=250, 

@@ -35,6 +35,7 @@ urlpatterns = [
     path('meal-delete/<int:pk>/', MealDelete.as_view(), name= 'meal-delete'),
     path('meal-complete/<int:id>/', meal_complete, name= 'meal-complete'),
     path('meal-incomplete/<int:id>/', meal_incomplete, name= 'meal-incomplete'),
+    path('delete_all', delete_all, name= 'delete_all'),
     path('event-create', EventCreate.as_view(), name= 'event-create'),
     path('create_event', create_event),
 
