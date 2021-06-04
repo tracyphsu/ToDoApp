@@ -68,6 +68,15 @@
             text-decoration: none;
         }
 
+        .custom-toggler.navbar-toggler  {
+            border-color: white;
+        }
+
+        .custom-toggler .navbar-toggler-icon {
+            background-image: url(
+                "data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255,255,255)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+        }
+
         .card-body a {
             color: #F7005C;
             text-decoration: none;
@@ -235,7 +244,9 @@
         {% endblock content %}
     </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+        {% include "ToDo_App/script.html" %}
 
+        {% block extra_scripts %}
+        {% endblock extra_scripts %}
 </body>
 </html>

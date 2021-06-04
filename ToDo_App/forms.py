@@ -36,7 +36,7 @@ class BillForm(forms.Form):
         ))
     due_date = forms.DateField( 
         widget= forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': 'Add Due Date...', 'aria-label': 'Bill', 'aria-describedby': 'add-btn' }
+            attrs={'class': 'form-control', 'placeholder': 'Add Due Date... YYYY/MM/DD', 'aria-label': 'Bill', 'aria-describedby': 'add-btn' }
         ))
 
 
@@ -61,9 +61,9 @@ class EventForm(forms.Form):
         ))
     start = forms.DateField( 
     widget= forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': 'Add Start Date...', 'aria-label': 'Start Date', 'aria-describedby': 'add-btn' }
+        attrs={'class': 'form-control', 'placeholder': 'Add Start Date... YYYY/MM/DD', 'aria-label': 'Start Date', 'aria-describedby': 'add-btn' }
         ))
     end = forms.DateField( 
     widget= forms.TextInput(
-        attrs={'class': 'form-control', 'placeholder': 'Add End Date...', 'aria-label': 'End Date', 'aria-describedby': 'add-btn' }
+        attrs={'class': 'form-control', 'placeholder': 'Add End Date...YYYY/MM/DD', 'aria-label': 'End Date', 'aria-describedby': 'add-btn' }
         ))
