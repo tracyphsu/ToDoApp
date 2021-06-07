@@ -12,4 +12,4 @@ Turn the sound on for a happy tune as you follow along in this preview!
 https://user-images.githubusercontent.com/77694729/121071431-8deb6180-c795-11eb-9790-b463c7ca1d8a.mp4
 
 
-Try it yourself: https://3.21.186.10/login/
+Try it yourself: http://3.142.251.232/login/
