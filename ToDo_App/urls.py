@@ -21,6 +21,7 @@ urlpatterns = [
     path('grocery-delete/<int:pk>/', GroceryDelete.as_view(), name= 'grocery-delete'),
     path('grocery-complete/<int:id>/', grocery_complete, name= 'grocery-complete'),
     path('grocery-incomplete/<int:id>/', grocery_incomplete, name= 'grocery-incomplete'),
+    path('delete_grocery/<int:id>/', delete_grocery, name= 'delete_grocery'),
     path('bills', bills, name='bills'),
     path('bill-list', BillList.as_view(), name= 'bill-list'),
     path('bill-create', billCreate, name= 'bill-create'),
