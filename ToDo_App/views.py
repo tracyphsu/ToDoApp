@@ -7,11 +7,16 @@ import httplib2
 import os
 from oauth2client import file
 import json
+import pickle
+import os.path
 
 from apiclient import discovery
 import oauth2client
 from oauth2client import client
 from oauth2client import tools
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
 
 import datetime
 
@@ -391,15 +396,38 @@ def create_event(request):
 def billCreate(request):
     SCOPES = 'https://www.googleapis.com/auth/calendar'
     store = file.Storage('storage.json')
-    creds = store.get()
-    if not creds or creds.invalid:
-        flow = client.flow_from_clientsecrets('credentials.json', SCOPES)
-        creds = tools.run_flow(flow, store, flags) \
-                if flags else tools.fun(flow,store)
+    # creds = store.get()
+    creds = None
+   # The file token.pickle stores the user's access and refresh tokens, and is
+   # created automatically when the authorization flow completes for the first
+   # time.
+   if os.path.exists('token.pickle'):
+       with open('token.pickle', 'rb') as token:
+           creds = pickle.load(token)
+   # If there are no (valid) credentials available, let the user log in.
+   if not creds or not creds.valid:
+       if creds and creds.expired and creds.refresh_token:
+           creds.refresh(Request())
+       else:
+           flow = InstalledAppFlow.from_client_secrets_file(
+               CREDENTIALS_FILE, SCOPES)
+           creds = flow.run_local_server(port=0)
 
-    credentials = get_credentials()
-    http = credentials.authorize(httplib2.Http())
-    service = discovery.build('calendar', 'v3', http=http)
+       # Save the credentials for the next run
+       with open('token.pickle', 'wb') as token:
+           pickle.dump(creds, token)
+
+   service = build('calendar', 'v3', credentials=creds)
+#    return service
+
+#     if not creds or creds.invalid:
+#         flow = client.flow_from_clientsecrets('credentials.json', SCOPES)
+#         creds = tools.run_flow(flow, store, flags) \
+#                 if flags else tools.fun(flow,store)
+
+#     credentials = get_credentials()
+#     http = credentials.authorize(httplib2.Http())
+#     service = discovery.build('calendar', 'v3', http=http)
 
     event = {
         'summary': request.POST['bill'] + " Bill Due",
