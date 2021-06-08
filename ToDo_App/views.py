@@ -164,6 +164,12 @@ def grocery_incomplete(request, id):
     return redirect('/groceries')
 
 @login_required
+def delete_grocery(request, id):
+    delete_grocery = Grocery.objects.get(id=id)
+    delete_grocery.delete()
+    return redirect('/groceries')
+
+@login_required
 def task_complete(request, id):
     mark_complete = Task.objects.get(id=id)
     mark_complete.complete=True;
