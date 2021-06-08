@@ -176,6 +176,12 @@ def task_incomplete(request, id):
     return redirect('/')
 
 @login_required
+def delete_task(request, id):
+    delete_task = Task.objects.get(id=id)
+    delete_task.delete()
+    return redirect('/')
+
+@login_required
 def bills(request):
     bills= Bill.objects.filter(user=request.user)
     counts = Bill.objects.filter(user=request.user, paid=False)
@@ -235,6 +241,12 @@ def bill_notpaid(request, id):
     return redirect('/bills')
 
 @login_required
+def delete_bill(request, id):
+    delete_bill = Bill.objects.get(id=id)
+    delete_bill.delete()
+    return redirect('/bills')
+
+@login_required
 def meals(request):
     meals= Meal.objects.filter(user=request.user)
     counts = Meal.objects.filter(user=request.user, complete=False)
@@ -282,8 +294,10 @@ class MealDelete(LoginRequiredMixin, DeleteView):
     context_object_name= 'meals'
     success_url= reverse_lazy('meals')
 
-def delete_all(request):
-    delete_all.delete = Meal.objects.all().delete()
+@login_required
+def delete_meal(request, id):
+    delete_meal = Meal.objects.get(id=id)
+    delete_meal.delete()
     return redirect('/meals')
 
 @login_required
