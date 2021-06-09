@@ -258,7 +258,7 @@ def delete_bill(request, id):
 def meals(request):
     meals= Meal.objects.filter(user=request.user)
     counts = Meal.objects.filter(user=request.user, complete=False)
-    sunday = Meal.objects.all().filter(user=request.user, day='sunday')
+    sunday = Meal.objects.all().filter(user=request.user, day="sunday")
     monday = Meal.objects.all().filter(user=request.user, day="monday")
     tuesday = Meal.objects.all().filter(user=request.user, day="tuesday")
     wednesday = Meal.objects.all().filter(user=request.user, day="wednesday")

@@ -14,20 +14,23 @@ class MealForm(forms.Form):
         widget= forms.TextInput(
             attrs={'class': 'form-control', 'placeholder': 'Add Meal...', 'aria-label': 'Meal', 'aria-describedby': 'add-btn' }
         ))
-    day = forms.CharField(max_length=9, 
-        widget= forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': 'Day of the Week...', 'aria-label': 'Day', 'aria-describedby': 'add-btn' }
-        ))
-    # CHOICES = (
-    #     ('1', 'sunday'),
-    #     ('2', 'monday'),
-    #     ('3', 'tuesday'),
-    #     ('4', 'wednesday'),
-    #     ('5', 'thursday'),
-    #     ('6', 'friday'),
-    #     ('7', 'saturday'),
-    # )
-    # day = forms.ChoiceField(widget=forms.Select, choices=CHOICES)
+
+    
+    # day = forms.CharField(max_length=9, 
+    #     widget= forms.TextInput(
+    #         attrs={'class': 'form-control', 'placeholder': 'Day of the Week...', 'aria-label': 'Day', 'aria-describedby': 'add-btn' }
+    #     ))
+        
+    CHOICES = (
+        ('sunday', 'Sunday'),
+        ('monday', 'Monday'),
+        ('tuesday', 'Tuesday'),
+        ('wednesday', 'Wednesday'),
+        ('thursday', 'Thursday'),
+        ('friday', 'Friday'),
+        ('saturday', 'Saturday'),
+    )
+    day = forms.ChoiceField(widget=forms.Select, choices=CHOICES)
 
 class BillForm(forms.Form):
     bill = forms.CharField(max_length=250, 
