@@ -9,7 +9,8 @@ All-in-one practical solution to keeping track of tasks, meals, groceries, bill,
 
 Turn the sound on for a happy tune as you follow along in this preview!
 
-https://user-images.githubusercontent.com/77694729/121071431-8deb6180-c795-11eb-9790-b463c7ca1d8a.mp4
+
+https://user-images.githubusercontent.com/77694729/121446287-c8e9c280-c958-11eb-88a3-bfa3edfe581f.mp4
 
 
 Try it yourself: http://3.142.251.232/login/
